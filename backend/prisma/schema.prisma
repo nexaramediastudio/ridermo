@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Bike {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  category    String
+  engineCc    Int      @map("engine_cc")
+  price       Int
+  description String   @db.Text
+  topSpeed    String?  @map("top_speed")
+  mileage     String?
+  features    String[] @default([])
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  images         BikeImage[]
+  inquiries      Inquiry[]
+  financeOptions FinanceOption[]
+
+  @@map("bikes")
+}
+
+model BikeImage {
+  id        String   @id @default(cuid())
+  bikeId    String   @map("bike_id")
+  imageUrl  String   @map("image_url")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  bike Bike @relation(fields: [bikeId], references: [id], onDelete: Cascade)
+
+  @@map("bike_images")
+}
+
+model Inquiry {
+  id           String   @id @default(cuid())
+  customerName String   @map("customer_name")
+  phoneNumber  String   @map("phone_number")
+  message      String   @db.Text
+  bikeId       String?  @map("bike_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  bike Bike? @relation(fields: [bikeId], references: [id], onDelete: SetNull)
+
+  @@map("inquiries")
+}
+
+model FinanceOption {
+  id              String @id @default(cuid())
+  bikeId          String @map("bike_id")
+  downPayment     Int    @map("down_payment")
+  monthlyPayment  Int    @map("monthly_payment")
+  durationMonths  Int    @map("duration_months")
+
+  bike Bike @relation(fields: [bikeId], references: [id], onDelete: Cascade)
+
+  @@map("finance_options")
+}
