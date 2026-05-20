@@ -40,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${sora.variable} h-full scroll-smooth`}>
+    <html lang="en" className={`${sora.variable} h-full`}>
       <body className="min-h-full bg-primary font-sans text-white antialiased">
         <SiteShell>{children}</SiteShell>
       </body>

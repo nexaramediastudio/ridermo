@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLenis } from "lenis/react";
 import { Menu, X } from "lucide-react";
 import Button from "@/components/ui/Button";
+import BrandWordmark from "@/components/ui/BrandWordmark";
 
 const links = [
   { href: "/", label: "Home" },
@@ -73,8 +74,8 @@ export default function Navbar() {
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8">
         <Link href="/" className="group flex items-center gap-2">
-          <span className="text-2xl font-bold tracking-tight text-white">
-            Ride<span className="text-tvs-red">rmo</span>
+          <span className="text-2xl font-bold tracking-tight">
+            <BrandWordmark />
           </span>
           <span className="hidden text-[10px] font-medium uppercase tracking-[0.2em] text-gray-text sm:block">
             TVS Showroom

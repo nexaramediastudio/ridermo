@@ -53,6 +53,13 @@ const SITE: Record<string, SiteImageDef> = {
   },
 };
 
+/** Loading screen + navbar logo — add public/site/logo.png (square, ~256×256 or larger) */
+export const SITE_LOGO_FILE = "/site/logo.png";
+
+export function siteLogoSrc(): string {
+  return withImageCacheBust(SITE_LOGO_FILE);
+}
+
 export type SiteImageKey = keyof typeof SITE;
 
 /** Page images (hero, about, etc.) — drop files in public/site/ */

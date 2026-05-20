@@ -1,7 +1,11 @@
 PUT YOUR PAGE IMAGES HERE
 =========================
 
-Add these JPG files (recommended 1200px wide or larger):
+Add these files:
+
+  logo.png           → Loading screen + brand mark (square PNG, ~256×256 or larger)
+
+JPG page images (recommended 1200px wide or larger):
 
   hero.jpg           → Home page full-screen background
   about-banner.jpg   → About page top wide banner

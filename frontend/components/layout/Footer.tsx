@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Share2, Camera, MessageCircle, Phone, Mail, MapPin } from "lucide-react";
+import BrandWordmark from "@/components/ui/BrandWordmark";
 import {
   SITE_NAME,
   EMAIL,
@@ -27,8 +28,8 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
-            <Link href="/" className="text-2xl font-bold text-white">
-              Ride<span className="text-tvs-red">rmo</span>
+            <Link href="/" className="text-2xl font-bold">
+              <BrandWordmark />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-gray-text">
               Your premium authorized TVS motorcycle showroom. Experience power, performance, and trust.

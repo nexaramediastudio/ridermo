@@ -24,12 +24,23 @@ html.lenis body {
   height: auto;
 }
 
+html,
+body {
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
 
 .lenis.lenis-smooth [data-lenis-prevent] {
   overscroll-behavior: contain;
+}
+
+/* Reduce scroll jank from fixed layers + transforms */
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
 html {

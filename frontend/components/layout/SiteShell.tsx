@@ -2,7 +2,6 @@
 
 import { useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import LoadingScreen from "@/components/layout/LoadingScreen";
@@ -22,21 +21,17 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
+  if (!ready) {
+    return <LoadingScreen onComplete={handleLoadComplete} />;
+  }
+
   return (
     <SmoothScroll>
       <RouteScrollReset />
-      <LoadingScreen onComplete={handleLoadComplete} />
-      {isHome && ready && <ScrollProgress />}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: ready ? 1 : 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        aria-hidden={!ready}
-      >
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
-      </motion.div>
+      {isHome && <ScrollProgress />}
+      <Navbar />
+      <main className="flex-1">{children}</main>
+      <Footer />
     </SmoothScroll>
   );
 }
