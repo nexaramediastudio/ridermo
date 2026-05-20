@@ -3,6 +3,12 @@ import type { Request, Response } from "express";
 
 const prisma = new PrismaClient();
 
+/** Express 5 route params can be `string | string[]` — Prisma expects a single string. */
+function routeParam(value: string | string[] | undefined): string {
+  if (Array.isArray(value)) return value[0] ?? "";
+  return value ?? "";
+}
+
 export async function getAllBikes(req: Request, res: Response) {
   try {
     const { category, featured } = req.query;
@@ -28,7 +34,7 @@ export async function getAllBikes(req: Request, res: Response) {
 export async function getBikeBySlug(req: Request, res: Response) {
   try {
     const bike = await prisma.bike.findUnique({
-      where: { slug: req.params.slug },
+      where: { slug: routeParam(req.params.slug) },
       include: {
         images: true,
         financeOptions: true,
@@ -59,7 +65,7 @@ export async function createBike(req: Request, res: Response) {
 export async function updateBike(req: Request, res: Response) {
   try {
     const bike = await prisma.bike.update({
-      where: { id: req.params.id },
+      where: { id: routeParam(req.params.id) },
       data: req.body,
       include: { images: true, financeOptions: true },
     });
@@ -71,7 +77,7 @@ export async function updateBike(req: Request, res: Response) {
 
 export async function deleteBike(req: Request, res: Response) {
   try {
-    await prisma.bike.delete({ where: { id: req.params.id } });
+    await prisma.bike.delete({ where: { id: routeParam(req.params.id) } });
     res.status(204).send();
   } catch {
     res.status(500).json({ error: "Failed to delete bike" });

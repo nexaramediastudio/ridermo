@@ -1,0 +1,83 @@
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+/** Express 5 route params can be `string | string[]` — Prisma expects a single string. */
+function routeParam(value) {
+    if (Array.isArray(value))
+        return value[0] ?? "";
+    return value ?? "";
+}
+export async function getAllBikes(req, res) {
+    try {
+        const { category, featured } = req.query;
+        const bikes = await prisma.bike.findMany({
+            where: {
+                ...(category && typeof category === "string"
+                    ? { category }
+                    : {}),
+                ...(featured === "true" ? { featured: true } : {}),
+            },
+            include: {
+                images: true,
+                financeOptions: true,
+            },
+            orderBy: { createdAt: "desc" },
+        });
+        res.json(bikes);
+    }
+    catch {
+        res.status(500).json({ error: "Failed to fetch bikes" });
+    }
+}
+export async function getBikeBySlug(req, res) {
+    try {
+        const bike = await prisma.bike.findUnique({
+            where: { slug: routeParam(req.params.slug) },
+            include: {
+                images: true,
+                financeOptions: true,
+            },
+        });
+        if (!bike) {
+            res.status(404).json({ error: "Bike not found" });
+            return;
+        }
+        res.json(bike);
+    }
+    catch {
+        res.status(500).json({ error: "Failed to fetch bike" });
+    }
+}
+export async function createBike(req, res) {
+    try {
+        const bike = await prisma.bike.create({
+            data: req.body,
+            include: { images: true, financeOptions: true },
+        });
+        res.status(201).json(bike);
+    }
+    catch {
+        res.status(500).json({ error: "Failed to create bike" });
+    }
+}
+export async function updateBike(req, res) {
+    try {
+        const bike = await prisma.bike.update({
+            where: { id: routeParam(req.params.id) },
+            data: req.body,
+            include: { images: true, financeOptions: true },
+        });
+        res.json(bike);
+    }
+    catch {
+        res.status(500).json({ error: "Failed to update bike" });
+    }
+}
+export async function deleteBike(req, res) {
+    try {
+        await prisma.bike.delete({ where: { id: routeParam(req.params.id) } });
+        res.status(204).send();
+    }
+    catch {
+        res.status(500).json({ error: "Failed to delete bike" });
+    }
+}
