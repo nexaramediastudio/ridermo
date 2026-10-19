@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -9,20 +9,27 @@ import SmoothScroll from "@/components/layout/SmoothScroll";
 import RouteScrollReset from "@/components/layout/RouteScrollReset";
 import ScrollProgress from "@/components/home/ScrollProgress";
 
+const INTRO_KEY = "ridermo-intro-seen";
+
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
   const isHome = pathname === "/";
   const [ready, setReady] = useState(false);
 
-  const handleLoadComplete = useCallback(() => setReady(true), []);
+  useEffect(() => {
+    if (sessionStorage.getItem(INTRO_KEY) === "1") {
+      setReady(true);
+    }
+  }, []);
+
+  const handleLoadComplete = useCallback(() => {
+    sessionStorage.setItem(INTRO_KEY, "1");
+    setReady(true);
+  }, []);
 
   if (isAdmin) {
     return <>{children}</>;
-  }
-
-  if (!ready) {
-    return <LoadingScreen onComplete={handleLoadComplete} />;
   }
 
   return (
@@ -32,6 +39,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />
+      {!ready && <LoadingScreen onComplete={handleLoadComplete} />}
     </SmoothScroll>
   );
 }

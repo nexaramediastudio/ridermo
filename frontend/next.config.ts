@@ -1,8 +1,14 @@
 import type { NextConfig } from "next";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+/** Always the frontend app folder — not the monorepo root. */
+const frontendDir = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
+  // Root lockfile at ../ makes Turbopack look for `next` in the wrong place.
   turbopack: {
-    root: process.cwd(),
+    root: frontendDir,
   },
   images: {
     remotePatterns: [

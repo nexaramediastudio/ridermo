@@ -1,4 +1,5 @@
 export const SITE_NAME = "Ridermo TVS Showroom";
+export const COMPANY_LEGAL_NAME = "RIDERMO (PVT) LTD";
 export const SITE_DESCRIPTION =
   "Premium TVS motorcycle showroom — explore Apache, Raider, Ntorq, Ronin and more. Finance available.";
 

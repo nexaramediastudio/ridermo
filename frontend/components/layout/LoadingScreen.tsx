@@ -15,56 +15,48 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [visible, setVisible] = useState(true);
   const [progress, setProgress] = useState(0);
   const finishedRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
     const start = Date.now();
     let raf = 0;
-    const timeouts: ReturnType<typeof setTimeout>[] = [];
+    let fadeTimer = 0;
+
+    const complete = () => {
+      if (finishedRef.current) return;
+      finishedRef.current = true;
+      setProgress(100);
+      fadeTimer = window.setTimeout(() => {
+        setVisible(false);
+        document.body.style.overflow = "";
+        onCompleteRef.current();
+      }, 400);
+    };
 
     const tick = () => {
       const elapsed = Date.now() - start;
-      const target = Math.min(92, (elapsed / MIN_DURATION_MS) * 92);
-      setProgress((p) => Math.max(p, target));
+      const target = Math.min(100, (elapsed / MIN_DURATION_MS) * 100);
+      setProgress(target);
       if (elapsed < MIN_DURATION_MS) {
         raf = requestAnimationFrame(tick);
+      } else {
+        complete();
       }
     };
     raf = requestAnimationFrame(tick);
 
-    const finish = () => {
-      if (finishedRef.current) return;
-      finishedRef.current = true;
-
-      const remaining = Math.max(0, MIN_DURATION_MS - (Date.now() - start));
-      timeouts.push(
-        setTimeout(() => {
-          setProgress(100);
-          timeouts.push(
-            setTimeout(() => {
-              setVisible(false);
-              document.body.style.overflow = "";
-              onComplete();
-            }, 400)
-          );
-        }, remaining)
-      );
-    };
-
-    if (document.readyState === "complete") {
-      finish();
-    } else {
-      window.addEventListener("load", finish, { once: true });
-    }
+    const failSafe = window.setTimeout(complete, MIN_DURATION_MS + 800);
 
     return () => {
       cancelAnimationFrame(raf);
-      timeouts.forEach(clearTimeout);
-      window.removeEventListener("load", finish);
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(failSafe);
       document.body.style.overflow = "";
     };
-  }, [onComplete]);
+  }, []);
 
   return (
     <AnimatePresence mode="wait">

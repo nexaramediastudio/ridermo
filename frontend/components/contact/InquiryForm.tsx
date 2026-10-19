@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import { submitInquiry } from "@/lib/submit-inquiry";
@@ -129,6 +130,14 @@ export default function InquiryForm({ bikeId, bikeName }: InquiryFormProps) {
       <Button type="submit" className="w-full" variant="primary">
         {status === "loading" ? "Sending..." : "Submit Inquiry"}
       </Button>
+
+      <p className="text-center text-xs leading-relaxed text-gray-text">
+        By submitting this form, you agree to our{" "}
+        <Link href="/privacy" className="text-white/80 underline underline-offset-2 transition-colors hover:text-white">
+          Privacy Policy
+        </Link>
+        .
+      </p>
     </form>
   );
 }
